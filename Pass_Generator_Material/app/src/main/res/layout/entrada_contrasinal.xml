@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tvEntrada_Contrasinal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/acceso"
+        android:textSize="15dp"
+        android:textColor="#FF000000"/>
+    <EditText
+        android:layout_marginTop="10dp"
+        android:id="@+id/keepTrying"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/hint_primeiro"
+        android:textColorHint="@color/negro"
+        android:textColor="@color/negro"
+        android:inputType="textPassword"/>
+
+</LinearLayout>
