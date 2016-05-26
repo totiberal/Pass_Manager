@@ -31,7 +31,7 @@
             android:shadowRadius="1.5"
             android:text="@string/servicio"
             android:textSize="20sp"
-            android:textStyle="bold|italic"
+            android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
             android:typeface="sans" />
 
         <TextView
@@ -51,7 +51,7 @@
             android:shadowRadius="1.5"
             android:text="@string/usuario"
             android:textSize="20sp"
-            android:textStyle="bold|italic"
+            android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
             android:typeface="sans" />
 
         <TextView
@@ -72,7 +72,7 @@
             android:shadowRadius="1.5"
             android:text="@string/contrasinal"
             android:textSize="20sp"
-            android:textStyle="bold|italic"
+            android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
             android:typeface="sans" />
 
         <TextView

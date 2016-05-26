@@ -16,14 +16,19 @@
             android:gravity="fill_horizontal"
             />
 
-        <EditText
-            android:id="@+id/editTexto"
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/flotanteLonxitude"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/hint_primeiro"
-            android:textColorHint="@color/negro"
-            android:textColor="@color/negro"
-            android:inputType="textPassword"/>
+            android:layout_height="wrap_content">
+                <EditText
+                    android:id="@+id/editTexto"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hint_primeiro"
+                    android:textColorHint="@color/negro"
+                    android:textColor="@color/negro"
+                    android:inputType="textPassword"/>
+        </android.support.design.widget.TextInputLayout>
 
         <Button
             android:id="@+id/buttonPecharDialogo"

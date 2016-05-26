@@ -1,20 +1,15 @@
 package passgenerator.myapplication;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Vibrator;
-import android.preference.CheckBoxPreference;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,15 +17,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
-import android.widget.RelativeLayout;
-import android.widget.Toast;
-
 import java.util.Random;
 
 public class Main extends AppCompatActivity {
 
-    private AlertDialog.Builder venta;
-    private EditText tvEntrada, tvSalida, etContrasinal;
+    private EditText tvEntrada, tvSalida;
     private Button btnXerar, btnGardar, btnXestionar;
     private RadioButton rbNumero, rbLetra, rbTodo;
     private int lonxitude,numero;
@@ -45,6 +36,7 @@ public class Main extends AppCompatActivity {
     private boolean vibrar=true;
     private Vibrator vib;
     private LinearLayout rel;
+    private Fragment_Enter_Pass fragmentPass;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +58,7 @@ public class Main extends AppCompatActivity {
         inicializar();
         meterPreferencias();
         dialogoFragmento = new Fragment();
+        fragmentPass=new Fragment_Enter_Pass();
 
         boolean primeiraVez=preferencias.getBoolean("primeira",true);
         if(primeiraVez==true){
@@ -97,7 +90,8 @@ public class Main extends AppCompatActivity {
         btnXestionar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDialog(1);
+                FragmentManager fm = getSupportFragmentManager();
+                fragmentPass.show(fm, getResources().getString(R.string.need_pass));
             }
         });
 
@@ -121,7 +115,7 @@ public class Main extends AppCompatActivity {
             if(vibrar){
                 vib.vibrate(500);
             }
-            Toast.makeText(getApplicationContext(), R.string.toast_gardar,Toast.LENGTH_SHORT).show();
+            Snackbar.make(rel, R.string.toast_gardar, Snackbar.LENGTH_LONG).show();
         }else {
             Intent intent=new Intent(getBaseContext(),Gardar_Datos.class);
             intent.putExtra("pass",tvSalida.getText().toString());
@@ -137,16 +131,10 @@ public class Main extends AppCompatActivity {
             if(vibrar){
                 vib.vibrate(500);
             }
-
-
-            //Toast.makeText(getApplicationContext(), R.string.toast,Toast.LENGTH_SHORT).show();
-            Snackbar snackbar = Snackbar
-                    .make(rel, R.string.toast, Snackbar.LENGTH_LONG);
-
-            snackbar.show();
+            Snackbar.make(rel, R.string.toast, Snackbar.LENGTH_LONG).show();
         }else {
             if(Integer.parseInt(tvEntrada.getText().toString())>25){
-                Toast.makeText(getApplicationContext(),R.string.max_length, Toast.LENGTH_SHORT).show();
+                Snackbar.make(rel, R.string.max_length,Snackbar.LENGTH_LONG).show();
             }else{
                 tvSalida.setVisibility(View.VISIBLE);
                 if (rbNumero.isChecked()) conNumero();
@@ -201,63 +189,22 @@ public class Main extends AppCompatActivity {
         }
     }
 
-    //Metodo que mostra os dialogos
-    protected Dialog onCreateDialog(int id) {
-        switch (id) {
-
-            case 1:
-                // Primeiro preparamos o interior da ventá de diálogo inflando o seu
-                // fichero XML
-                String infService = Context.LAYOUT_INFLATER_SERVICE;
-                LayoutInflater li = (LayoutInflater) getApplicationContext().getSystemService(infService);
-                // Inflamos o compoñente composto definido no XML
-                View inflador = li.inflate(R.layout.entrada_contrasinal, null);
-                // Buscamos os compoñentes dentro do Diálogo
-
-
-                venta = new AlertDialog.Builder(this);
-                venta.setTitle(R.string.need_pass);
-                // Asignamos o contido dentro do diálogo (o que inflamos antes)
-                venta.setView(inflador);
-
-                etContrasinal=(EditText) inflador.findViewById(R.id.keepTrying);
-                etContrasinal.setText("");
-                // Non se pode incluír unha mensaxe dentro deste tipo de diálogo!!!
-                venta.setPositiveButton(R.string.aceptar, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int boton) {
-                        comprobarContrasinal();
-                        etContrasinal.setText("");
-                    }
-                });
-                venta.setNegativeButton(R.string.cancelar, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int boton) {
-
-                    }
-                });
-                return venta.create();
-
-        }
-        return null;
-    }
-
-    public void comprobarContrasinal(){
-        if(contrasinal.equals(etContrasinal.getText().toString())){
-            etContrasinal.setText("");
+    public void comprobarContrasinal(String password){
+        if(contrasinal.equals(password)){
             startActivity(new Intent(getApplicationContext(), Listado.class).putExtra("color", color));
         }
         else{
             cont++;
             if(vibrar){
                 vib.vibrate(500);
-                Toast.makeText(getApplicationContext(),"Estou vibrando",Toast.LENGTH_SHORT).show();
             }
 
             if(cont==3){
                 bd.eliminarTodo();
                 cont=0;
-                Toast.makeText(getApplicationContext(),"Todo borrado",Toast.LENGTH_SHORT).show();
+                Snackbar.make(rel, R.string.limite_fallos, Snackbar.LENGTH_LONG).show();
             }
-            else Toast.makeText(getApplicationContext(),R.string.incorrecto,Toast.LENGTH_SHORT).show();
+            else Snackbar.make(rel, R.string.incorrecto, Snackbar.LENGTH_LONG).show();
         }
     }
 
@@ -275,22 +222,37 @@ public class Main extends AppCompatActivity {
             case "Rojo":
                 color="Rojo";
                 mToolbar.setBackgroundColor(getResources().getColor(R.color.rojo));
+                btnXerar.setBackground(getResources().getDrawable(R.drawable.estilo_boton_rojo));
+                btnXestionar.setBackground(getResources().getDrawable(R.drawable.estilo_boton_rojo));
+                btnGardar.setBackground(getResources().getDrawable(R.drawable.estilo_boton_rojo));
                 break;
             case "Verde":
                 color="Verde";
                 mToolbar.setBackgroundColor(getResources().getColor(R.color.verde));
+                btnXerar.setBackground(getResources().getDrawable(R.drawable.estilo_boton_verde));
+                btnXestionar.setBackground(getResources().getDrawable(R.drawable.estilo_boton_verde));
+                btnGardar.setBackground(getResources().getDrawable(R.drawable.estilo_boton_verde));
                 break;
             case "Amarillo":
                 color="Amarillo";
                 mToolbar.setBackgroundColor(getResources().getColor(R.color.amarelo));
+                btnXerar.setBackground(getResources().getDrawable(R.drawable.estilo_boton_amarelo));
+                btnXestionar.setBackground(getResources().getDrawable(R.drawable.estilo_boton_amarelo));
+                btnGardar.setBackground(getResources().getDrawable(R.drawable.estilo_boton_amarelo));
                 break;
             case "Naranja":
                 color="Naranja";
                 mToolbar.setBackgroundColor(getResources().getColor(R.color.naranja));
+                btnXerar.setBackground(getResources().getDrawable(R.drawable.estilo_boton_naranja));
+                btnXestionar.setBackground(getResources().getDrawable(R.drawable.estilo_boton_naranja));
+                btnGardar.setBackground(getResources().getDrawable(R.drawable.estilo_boton_naranja));
                 break;
             default:
                 color="Azul";
                 mToolbar.setBackgroundColor(getResources().getColor(R.color.color_boton));
+                btnXerar.setBackground(getResources().getDrawable(R.drawable.estilo_botones));
+                btnXestionar.setBackground(getResources().getDrawable(R.drawable.estilo_botones));
+                btnGardar.setBackground(getResources().getDrawable(R.drawable.estilo_botones));
                 break;
         }
     }
@@ -330,11 +292,19 @@ public class Main extends AppCompatActivity {
     }
 
     @Override
+    protected void onRestart() {
+        super.onRestart();
+        tvSalida.setText("");
+    }
+
+    @Override
     public void onResume(){
         super.onResume();
         meterPreferencias();
         cont=0;
         tvEntrada.setText("");
+        tvSalida.setText("");
+        if(tvSalida!=null) tvSalida.setVisibility(View.GONE);
     }
 
     /**Metodos da base de datos*/
@@ -366,3 +336,5 @@ public class Main extends AppCompatActivity {
     /**FIN Metodos da base de datos*/
 
 }
+
+//http://androideity.com/2016/02/15/material-design-recycler-view-parte-2/

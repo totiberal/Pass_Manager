@@ -11,11 +11,12 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.GestureDetector;
@@ -28,7 +29,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.itextpdf.text.Document;
@@ -53,8 +53,11 @@ public class ContrasinaisFragment extends Fragment {
     ArrayList<Items> arrayFilas;
     File pdfFile;
     String  ruta;
-    AdaptadorLista adaptador;
+    public static AdaptadorLista adaptador;
     FloatingActionButton btnFlotante;
+    private String color;
+    private BorrarFragment borrarFragment;
+    private Fragment_Change_Data fragmentChangeData;
 
     public ContrasinaisFragment() {
     }
@@ -62,20 +65,25 @@ public class ContrasinaisFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        prepararAdaptador();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v =inflater.inflate(R.layout.listado_contrasinais,container,false);
         btnFlotante=(FloatingActionButton) v.findViewById(R.id.fab);
+        color=getArguments().getString("color", "Azul");
+
         lv=(RecyclerView) v.findViewById(R.id.idLista);
 
         bd = new BaseDatos(getActivity());
         bd.sqlLiteDB = bd.getWritableDatabase();
+        borrarFragment=new BorrarFragment();
+        fragmentChangeData=new Fragment_Change_Data();
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         lv.setLayoutManager(mLayoutManager);
         lv.setItemAnimator(new DefaultItemAnimator());
-        lv.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
+        // lv.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
         prepararAdaptador();
         operacionsPDF();
         registerForContextMenu(lv);
@@ -94,12 +102,38 @@ public class ContrasinaisFragment extends Fragment {
                 String[] mandar = {arrayL.get(position).getServizo(), arrayL.get(position).getUsuario(), arrayL.get(position).getContrasinal()};
                 Intent intent = new Intent(getContext(), MostrarDatos.class);
                 intent.putExtra("datos", mandar);
+                intent.putExtra("color", color);
                 startActivity(intent);
             }
 
             @Override
             public void onLongClick(View view, int position) {
                 num = position;
+                PopupMenu popup = new PopupMenu(view.getContext(), view);
+                popup.inflate(R.menu.menu_contextual);
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()) {
+
+                            // Ítems premidos sobre o TextView
+                            // Lanza un Toast coa opción do menú contextual que se seleccinou
+                            case R.id.idMenuBorrar:
+                                abrirFragmentBorrar();
+                                adaptador.notifyDataSetChanged();
+                                prepararAdaptador();
+                                return true;
+
+                            case R.id.idMenuEditar:
+                                modificarDatosFrgament();
+                                adaptador.notifyDataSetChanged();
+                                prepararAdaptador();
+                                return true;
+                        }
+                        return false;
+                    }
+                });
+                popup.show();
             }
         }));
 
@@ -184,19 +218,6 @@ public class ContrasinaisFragment extends Fragment {
     }
 
     /**Metodos de acceso a base de datos**/
-    public void borrar(){
-        Pares p = arrayL.get(num);
-        bd.borrar(p.getServizo());
-        adaptador.notifyDataSetChanged();
-        prepararAdaptador();
-    }
-
-    public void cambios(String dato){
-        Pares p=arrayL.get(num);
-        bd.modificar(p.getServizo(), dato);
-        adaptador.notifyDataSetChanged();
-        prepararAdaptador();
-    }
 
     @Override
     public void onStart(){
@@ -206,6 +227,8 @@ public class ContrasinaisFragment extends Fragment {
             bd = new BaseDatos(getContext());
             bd.sqlLiteDB = bd.getWritableDatabase();
         }
+        adaptador.notifyDataSetChanged();
+        prepararAdaptador();
     }
 
     @Override
@@ -219,104 +242,11 @@ public class ContrasinaisFragment extends Fragment {
     }
     /**Fin metodos acceso a base de datos **/
 
-
-    /** Ventas de dialogo para editar e borrar**/
-    protected Dialog onCreateDialog(int id) {
-        if(id==1) {
-            venta = new AlertDialog.Builder(getActivity());
-            venta.setIcon(android.R.drawable.ic_dialog_info);
-            venta.setTitle(R.string.alerta);
-            venta.setMessage(R.string.mensaxe);
-            venta.setCancelable(false);
-            venta.setPositiveButton(R.string.si, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int boton) {
-                    borrar();
-                }
-            });
-            venta.setNegativeButton(R.string.non, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int boton) {
-
-                }
-            });
-
-            return venta.create();
-        }
-
-        if(id==2){
-            // Primeiro preparamos o interior da ventá de diálogo inflando o seu
-            // fichero XML
-            String infService = Context.LAYOUT_INFLATER_SERVICE;
-            LayoutInflater li = (LayoutInflater) getContext().getSystemService(infService);
-            // Inflamos o compoñente composto definido no XML
-            View inflador = li.inflate(R.layout.entrada_texto, null);
-            // Buscamos os compoñentes dentro do Diálogo
-            final EditText etNome = (EditText) inflador.findViewById(R.id.et_nome);
-            etNome.setText("");
-            venta = new AlertDialog.Builder(getActivity());
-            venta.setTitle(R.string.elixe);
-            venta.setMessage(R.string.pass_service);
-            // Asignamos o contido dentro do diálogo (o que inflamos antes)
-            venta.setView(inflador);
-            // Non se pode incluír unha mensaxe dentro deste tipo de diálogo!!!
-            venta.setPositiveButton(R.string.aceptar, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int boton) {
-                    dato=etNome.getText().toString();
-                    cambios(dato);
-                }
-            });
-            venta.setNegativeButton(R.string.cancelar, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int boton) {
-
-                }
-            });
-            return venta.create();
-        }
-
-        return null;
-    }
-
-    /**  FIN Ventas de dialogo para editar e borrar**/
-
-    /*@Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, v, menuInfo);
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
-        MenuInflater inflater = getActivity().getMenuInflater();
-        inflater.inflate(R.menu.menu_contextual, menu);
-    }
-
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        if (getUserVisibleHint()) {
-            AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-            ArrayAdapter<String> adaptador = (ArrayAdapter<String>) lv.getAdapter();
-
-            switch (item.getItemId()) {
-
-                // Ítems premidos sobre o TextView
-                // Lanza un Toast coa opción do menú contextual que se seleccinou
-                case R.id.idMenuBorrar:
-                    getActivity().showDialog(2);
-                    prepararAdaptador();
-                    adaptador.notifyDataSetChanged();
-                    return true;
-
-                case R.id.idMenuEditar:
-                    getActivity().showDialog(2);
-                    return true;
-
-                default:
-                    return super.onContextItemSelected(item);
-            }
-        }
-        return super.onContextItemSelected(item);
-    }*/
-
     //Metodo que recarga o adaptador cando se volve a activity
     @Override
     public void onResume(){
         super.onResume();
-        prepararAdaptador();
+        adaptador.notifyDataSetChanged();
     }
 
     //Implementacion dos eventos click do RecyclerView
@@ -369,5 +299,25 @@ public class ContrasinaisFragment extends Fragment {
         }
     }
 
+    public void modificarDatosFrgament(){
+        Bundle b=new Bundle();
+        b.putString("modificar", arrayL.get(num).getServizo());
+        fragmentChangeData.setArguments(b);
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        fragmentChangeData.show(fm, getResources().getString(R.string.cambiar_datos));
+    }
 
+    public void abrirFragmentBorrar(){
+        Bundle b=new Bundle();
+        b.putString("borrar", arrayL.get(num).getServizo());
+        borrarFragment.setArguments(b);
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        borrarFragment.show(fm, getResources().getString(R.string.atencion));
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        prepararAdaptador();
+    }
 }

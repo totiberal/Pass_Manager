@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,10 +47,16 @@ public class AdaptadorLista extends RecyclerView.Adapter<AdaptadorLista.MyViewHo
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    public void onBindViewHolder(final MyViewHolder holder, int position) {
         Items item = contrasinais.get(position);
         holder.texto.setText(item.getRuta());
         holder.imaxe.setImageResource(item.getImaxe());
+        holder.imaxe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                holder.imaxe.bringToFront();
+            }
+        });
 
     }
 

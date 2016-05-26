@@ -92,9 +92,10 @@ public class BaseDatos extends SQLiteOpenHelper {
     }
 
     //Metodo que permite modificar os datos
-    public void modificar(String dato, String novo){
+    public void modificar(String dato, String novaPass, String novoUser){
         ContentValues datosexemplo = new ContentValues();
-        datosexemplo.put("contrasinal", Utilidades.Encriptar(novo));
+        datosexemplo.put("usuario", Utilidades.Encriptar(novoUser));
+        datosexemplo.put("contrasinal", Utilidades.Encriptar(novaPass));
         String condicionwhere = "servizo=?";
         String[] parametros = new String[]{dato};
         int rexistrosafectados = sqlLiteDB.update(TABOA,datosexemplo,condicionwhere,parametros);

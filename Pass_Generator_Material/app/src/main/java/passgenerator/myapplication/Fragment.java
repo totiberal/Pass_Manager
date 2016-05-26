@@ -18,7 +18,7 @@ public class Fragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        final View rootView = inflater.inflate(R.layout.activity_fragment, container, false);
+        final View rootView = inflater.inflate(R.layout.activity_borrar_fragment, container, false);
         getDialog().setTitle(getTag());         // O Tag se envía dende a activiy có método show.
 
         Button btn = (Button) rootView.findViewById(R.id.buttonPecharDialogo);

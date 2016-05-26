@@ -7,8 +7,10 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -24,6 +26,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TabHost;
 import android.widget.Toast;
 
@@ -37,11 +40,12 @@ public class FicheirosFragment extends Fragment {
 
     RecyclerView lvFiles;
     MiAdaptador adaptadorFiles=null;
-    Button btnGardar;
+    AppCompatButton btnGardar;
     ImageButton btnAtras;
     File file;
     File[] fileList;
     String rutaCompleta;
+    RelativeLayout rel;
 
     public FicheirosFragment() {}
 
@@ -54,14 +58,15 @@ public class FicheirosFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v =inflater.inflate(R.layout.listado_ficheiros,container,false);
 
+        rel=(RelativeLayout) v.findViewById(R.id.rel);
         lvFiles=(RecyclerView) v.findViewById(R.id.idListaFiles);
-        btnGardar=(Button) v.findViewById(R.id.idBotonGardar);
+        btnGardar=(AppCompatButton) v.findViewById(R.id.idBotonGardar);
         btnAtras=(ImageButton) v.findViewById(R.id.idBotonAtras);
         file= Environment.getRootDirectory().getParentFile();
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         lvFiles.setLayoutManager(mLayoutManager);
         lvFiles.setItemAnimator(new DefaultItemAnimator());
-        lvFiles.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
+        //lvFiles.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
         prepararListaFiles();
 
         lvFiles.addOnItemTouchListener(new RecyclerTouchListener(getActivity(), lvFiles, new ClickListener() {
@@ -104,7 +109,7 @@ public class FicheirosFragment extends Fragment {
             prepararListaFiles();
         }catch(NullPointerException ex){
             ex.printStackTrace();
-            Toast.makeText(getContext(), "Imposible guardarlo aqui", Toast.LENGTH_SHORT).show();
+            Snackbar.make(rel, R.string.imposible_gardar,Snackbar.LENGTH_LONG).show();
         }
 
     }
@@ -155,7 +160,7 @@ public class FicheirosFragment extends Fragment {
             if(fileList[posicion].isFile()) Toast.makeText(getContext(),"arquivo",Toast.LENGTH_SHORT).show();
             else if(fileList[posicion].isDirectory()){
                 rutaCompleta=fileList[posicion].toString();
-                Toast.makeText(getContext(),""+rutaCompleta,Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getContext(),""+rutaCompleta,Toast.LENGTH_SHORT).show();
                 file=new File(rutaCompleta);
                 prepararListaFiles();
             }
@@ -173,7 +178,7 @@ public class FicheirosFragment extends Fragment {
             file=new File(rutaCompleta);
             prepararListaFiles();
         }catch(NullPointerException ex){
-            Toast.makeText(getContext(),"fin", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getContext(),"fin", Toast.LENGTH_SHORT).show();
             Log.e("CONTROLADO","Non se pode ir mais cara atras");
         }
     }

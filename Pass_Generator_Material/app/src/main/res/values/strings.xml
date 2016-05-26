@@ -50,6 +50,14 @@
     <string name="max_length">Maximum length is 25</string>
     <string name="colormenu">Theme colour</string>
     <string name="select_colour">Select a colour</string>
+    <string name="passVella">Type your password...</string>
+    <string name="passNova">New Password</string>
+    <string name="cambiada">Password changed</string>
+    <string name="noncambiada">Unable to change the password</string>
+    <string name="novo_usuario">Type the new user name...</string>
+    <string name="cambiar_datos">Change data</string>
+    <string name="limite_fallos">You missed 3 times, everything has been deleted</string>
+    <string name="imposible_gardar">Imposible to save it in here</string>
 
     <string-array name="cores">
         <item>Rojo</item>
@@ -58,4 +66,7 @@
         <item>Amarillo</item>
         <item>Naranja</item>
     </string-array>
+    <string name="title_activity_login">Sign in</string>
+
+
 </resources>

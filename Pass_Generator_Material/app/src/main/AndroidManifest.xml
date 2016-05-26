@@ -13,20 +13,29 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/MyMaterialTheme">
-        <activity android:name=".Main">
+        <activity
+            android:name=".Main"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Gardar_Datos" />
-        <activity android:name=".Listado" />
-        <activity android:name=".MostrarDatos" />
+        <activity android:name=".Gardar_Datos"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".Listado"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".MostrarDatos"
+            android:screenOrientation="portrait"/>
         <activity android:name=".Fragment" />
         <activity android:name=".PantallaPreferencias" />
         <activity android:name=".ContrasinalFragment" />
-        <activity android:name=".FragmentDialogoContrasinal"></activity>
+        <activity android:name=".FragmentDialogoContrasinal" />
+        <activity android:name=".Fragment_Password" />
+        <activity android:name=".BorrarFragment" />
+        <activity android:name=".Fragment_Enter_Pass" />
+        <activity android:name=".Fragment_Change_Data"></activity>
     </application>
 
 </manifest>

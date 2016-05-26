@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:clickable="true"
         android:focusable="true"
+        android:padding="8dp"
         android:background="?android:attr/selectableItemBackground">
         <ImageView
             android:id="@+id/idImaxeEsquerda"
