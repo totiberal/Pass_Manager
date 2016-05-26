@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="EXEMPLO DE SETTINGS">
+
+    <PreferenceCategory android:title="@string/axustex_xerais">
+        <CheckBoxPreference
+            android:defaultValue="False"
+            android:key="vibrar"
+            android:summary="@string/avtivar_vibracion"
+            android:title="@string/vibracion" />
+        <ListPreference
+            android:key="toolbarColour"
+            android:title="@string/colormenu"
+            android:entries="@array/cores"
+            android:dialogTitle="@string/select_colour"
+            android:summary="Choose a colour for the toolbar"
+            android:entryValues="@array/cores" />
+    </PreferenceCategory>
+</PreferenceScreen>

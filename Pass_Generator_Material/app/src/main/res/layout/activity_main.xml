@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="0dp"
+    android:paddingLeft="0dp"
+    android:paddingRight="0dp"
+    android:paddingTop="0dp"
+    tools:context=".Main"
+    android:id="@+id/probando">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:paddingBottom="10dp"
+        android:shadowDx="1"
+        android:shadowDy="2"
+        android:shadowRadius="1.5"
+        android:text="@string/titulo"
+        android:textSize="40dp"
+        android:textStyle="bold|italic"
+        android:typeface="sans" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin">
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/idNumero"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="true"
+                android:text="@string/numero" />
+
+            <RadioButton
+                android:id="@+id/idCaracteres"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/letras" />
+
+            <RadioButton
+                android:id="@+id/idComplex"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/complexa" />
+        </RadioGroup>
+
+        <EditText
+            android:id="@+id/idEntrada"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:hint="@string/hint"
+            android:inputType="number"
+            android:maxLength="2"/>
+
+        <Button
+            android:id="@+id/idXerar"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:shadowColor="#000000"
+            android:background="@drawable/estilo_botones"
+            android:text="@string/boton"
+            android:textColor="#FFFFFF"
+            android:elevation="10dp"/>
+
+        <EditText
+            android:id="@+id/idResultado"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:visibility="gone"
+            android:layout_gravity="center"
+            android:gravity="center"/>
+
+        <Button
+            android:id="@+id/idGardar"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/estilo_botones"
+            android:gravity="center"
+            android:text="@string/gardar"
+            android:textColor="#FFFFFF"
+            android:elevation="10dp"/>
+
+        <Button
+            android:id="@+id/idXestionar"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+
+
+            android:gravity="center"
+            android:background="@drawable/estilo_botones"
+            android:shadowRadius="5"
+            android:text="@string/xestionar"
+            android:textColor="#FFFFFF"
+            android:elevation="10dp"/>
+
+    </LinearLayout>
+
+
+</LinearLayout>
